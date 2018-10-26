@@ -12,8 +12,33 @@ dependencies {
     testCompile group: 'junit', name: 'junit', version: '4.12'
     // jsoup HTML parser library @ https://jsoup.org/
     compile 'org.jsoup:jsoup:1.11.3'
+    // https://mvnrepository.com/artifact/org.apache.poi/poi
+    compile group: 'org.apache.poi', name: 'poi', version: '3.9'
+    // https://mvnrepository.com/artifact/org.apache.poi/poi-ooxml
+    compile group: 'org.apache.poi', name: 'poi-ooxml', version: '3.17'
 }
-version '1.0-SNAPSHOT'
+
+jar {
+    manifest {
+        attributes("Manifest-Version": "1.0",
+                "Main-Class": "com.scrapper.blewah.Scrapper")
+    }
+}
+
+task fatJar(type: Jar) {
+    manifest.from jar.manifest
+    classifier = 'all'
+    from {
+        configurations.runtime.collect { it.isDirectory() ? it : zipTree(it) }
+    } {
+        exclude "META-INF/*.SF"
+        exclude "META-INF/*.DSA"
+        exclude "META-INF/*.RSA"
+    }
+    with jar
+}
+
+version '1.7'
 
 apply plugin: 'java'
 
